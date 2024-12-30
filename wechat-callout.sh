@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 判断 /usr/bin/wechat 进程不存在直接结束
-ps -ef | grep '/usr/bin/wechat' | grep -v grep > /dev/null
+ps -ef | grep -E '/usr/bin/wechat|/opt/wechat-universal/wechat' | grep -v grep > /dev/null
 if [ $? -eq 1 ]; then
     exit 0
 fi
