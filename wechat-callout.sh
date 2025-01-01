@@ -11,6 +11,11 @@ wechat_window=$(wmctrl -lx | grep 'wechat.wechat')
 script_dir=$(cd "$(dirname "$0")";pwd)
 cd $script_dir
 
+# 获取当前鼠标位置
+current_mouse_pos=$(xdotool getmouselocation)
+current_mouse_x=$(echo $current_mouse_pos | cut -d ' ' -f 1 | cut -d ':' -f 2)
+current_mouse_y=$(echo $current_mouse_pos | cut -d ' ' -f 2 | cut -d ':' -f 2)
+
 # 判断是否找到名为 '微信' 的窗口
 if [[ -n "$wechat_window" ]]; then
     # 使用 xdotool 查询名为 '微信' 的窗口
@@ -18,11 +23,6 @@ if [[ -n "$wechat_window" ]]; then
 
     # 获取当前激活窗口的ID
     current_window=$(xdotool getactivewindow)
-
-    # 获取当前鼠标位置
-    current_mouse_pos=$(xdotool getmouselocation)
-    current_mouse_x=$(echo $current_mouse_pos | cut -d ' ' -f 1 | cut -d ':' -f 2)
-    current_mouse_y=$(echo $current_mouse_pos | cut -d ' ' -f 2 | cut -d ':' -f 2)
 
     # 如果当前窗口是 '微信'，则关闭它
     if [[ "$current_window" == "$wechat_window" ]]; then
@@ -47,9 +47,6 @@ if [[ -n "$wechat_window" ]]; then
         xdotool windowactivate "$wechat_window"
         echo "激活 '微信' 窗口"
     fi
-
-    # 恢复鼠标到原位置
-    xdotool mousemove "$current_mouse_x" "$current_mouse_y"
 else
     # 如果没有找到 '微信' 窗口，使用外部命令 'find' 获取坐标
     coord=$(./wechat-callout)  # 替换为实际的 find 命令
@@ -62,3 +59,6 @@ else
       echo "在 ($x, $y) 位置点击左键"
     fi
 fi
+
+# 恢复鼠标到原位置
+xdotool mousemove "$current_mouse_x" "$current_mouse_y"
